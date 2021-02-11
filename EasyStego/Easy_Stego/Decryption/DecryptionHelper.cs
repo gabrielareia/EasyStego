@@ -25,6 +25,13 @@ namespace Stego.Decryption
                 int indexImage = i * 8 + offset;
                 int indexMessage = i * 2;
 
+                if(indexImage >= imageBits.Count || indexMessage >= messageBits.Count)
+                {
+                    throw new Exception("Something went wrong,\n" +
+                        "please make sure that the chosen image has indeed a message inside.");
+                }
+
+
                 if (skipAlpha)
                 {
                     //Skip alpha bytes
