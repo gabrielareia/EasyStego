@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Easy_Stego.Stego
 {
@@ -107,7 +108,7 @@ namespace Easy_Stego.Stego
 
             using (Bitmap image = new Bitmap(path))
             {
-                List<byte> list = new List<byte>();
+                byte[] list = new byte[image.Width * image.Height * 4];
 
                 switch (type)
                 {
@@ -121,20 +122,42 @@ namespace Easy_Stego.Stego
                         break;
                 }
 
-                for (int y = 0; y < image.Height; y++)
+                unsafe
                 {
-                    for (int x = 0; x < image.Width; x++)
-                    {
-                        var pixel = image.GetPixel(x, y);
+                    BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
+                        ImageLockMode.ReadOnly, image.PixelFormat);
 
-                        list.Add(pixel.R);
-                        list.Add(pixel.G);
-                        list.Add(pixel.B);
-                        list.Add(pixel.A);
-                    }
+                    int bytesPerPixel = Bitmap.GetPixelFormatSize(data.PixelFormat) / 8;
+                    int heightInPixels = data.Height;
+                    int widthInBytes = data.Width * bytesPerPixel;
+
+                    byte* ptrFirstPixel = (byte*)data.Scan0;
+
+                    Parallel.For(0, heightInPixels, (y) =>
+                    {
+                        int lineStride = y * data.Stride;
+
+                        byte* currentLine = ptrFirstPixel + (lineStride);
+                        for (int x = 0; x < widthInBytes; x += bytesPerPixel)
+                        {
+                            int index = lineStride + x;
+
+                            int b = currentLine[x];
+                            int g = currentLine[x + 1];
+                            int r = currentLine[x + 2];
+                            int a = currentLine[x + 3];
+
+                            list[index] = (byte)r;
+                            list[index + 1] = (byte)g;
+                            list[index + 2] = (byte)b;
+                            list[index + 3] = (byte)a;
+                        }
+                    });
+
+                    image.UnlockBits(data);
                 }
 
-                return list.ToArray();
+                return list;
             }
         }
 
@@ -149,21 +172,39 @@ namespace Easy_Stego.Stego
         {
             using (Bitmap image = new Bitmap(width, height))
             {
-                for (int y = 0; y < height; y++)
+                unsafe
                 {
-                    for (int x = 0; x < width; x++)
+                    BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
+                        ImageLockMode.ReadOnly, image.PixelFormat);
+
+                    int bytesPerPixel = Bitmap.GetPixelFormatSize(data.PixelFormat) / 8;
+                    int heightInPixels = data.Height;
+                    int widthInBytes = data.Width * bytesPerPixel;
+
+                    byte* ptrFirstPixel = (byte*)data.Scan0;
+
+                    Parallel.For(0, heightInPixels, (y) =>
                     {
-                        int index = (y * width + x) * 4;
+                        int lineStride = y * data.Stride;
 
-                        System.Drawing.Color color =
-                            System.Drawing.Color.FromArgb(
-                                bytes[index + 3],
-                                bytes[index + 0],
-                                bytes[index + 1],
-                                bytes[index + 2]);
+                        byte* currentLine = ptrFirstPixel + (lineStride);
+                        for (int x = 0; x < widthInBytes; x += bytesPerPixel)
+                        {
+                            int index = lineStride + x;
 
-                        image.SetPixel(x, y, color);
-                    }
+                            byte r = bytes[index];
+                            byte g = bytes[index + 1];
+                            byte b = bytes[index + 2];
+                            byte a = bytes[index + 3];
+
+                            currentLine[x] = b;
+                            currentLine[x + 1] = g;
+                            currentLine[x + 2] = r;
+                            currentLine[x + 3] = a;
+                        }
+                    });
+
+                    image.UnlockBits(data);
                 }
 
                 image.Save(path, ImageFormat.Png);
@@ -184,6 +225,6 @@ namespace Easy_Stego.Stego
             {
                 writer.Write(text);
             }
-        }        
+        }
     }
 }

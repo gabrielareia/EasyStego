@@ -1,6 +1,7 @@
 ﻿using Easy_Stego.Stego;
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace Stego.Encryption
 {
@@ -12,10 +13,17 @@ namespace Stego.Encryption
         /// <param name="imageBitSize">The size of the image that everyone will see, in bits.</param>
         /// <param name="messageBitSize">The size of the message that will be hidden, in bits.</param>
         /// <param name="sizeInfo">How much of the image will take to hold the message size information.</param>
-        public static void CheckMinimumSize(int imageBitSize, int messageBitSize, SizeInfo sizeInfo)
+        public static void CheckMinimumSize(int imageBitSize, int messageBitSize, SizeInfo sizeInfo, bool skipAlpha)
         {
-            // int minimumImageSize = ((imageBitSize / 4) * 3) - (int)sizeInfo;
-            int minimumImageSize = imageBitSize - (int)sizeInfo;
+            int minimumImageSize;
+            if (skipAlpha)
+            {
+                minimumImageSize = ((imageBitSize / 4) * 3) - (int)sizeInfo;
+            }
+            else
+            {
+                minimumImageSize = imageBitSize - (int)sizeInfo;
+            }
 
             if (minimumImageSize <= 0)
             {
@@ -101,11 +109,15 @@ namespace Stego.Encryption
         {
             int offset = 0;
 
+            int size = (int)sizeInfo;
+
             //For every byte in the image:
+
+            //Parallel.For(0, imageBits.Count / 8, (i) => // 
             for (int i = 0; i < imageBits.Count / 8; i++)
             {
                 //Start to load message after the size information
-                int indexImage = i * 8 + (int)sizeInfo;
+                int indexImage = i * 8 + size;
 
                 //If we hit the alpha channel we will decrease the indexMessage by 2 each time,
                 //so we won't loose any bit of the message.
