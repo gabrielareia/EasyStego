@@ -1,7 +1,6 @@
 ﻿using Easy_Stego.Stego;
 using System;
 using System.Collections;
-using System.Threading.Tasks;
 
 namespace Stego.Encryption
 {
@@ -112,8 +111,6 @@ namespace Stego.Encryption
             int size = (int)sizeInfo;
 
             //For every byte in the image:
-
-            //Parallel.For(0, imageBits.Count / 8, (i) => // 
             for (int i = 0; i < imageBits.Count / 8; i++)
             {
                 //Start to load message after the size information

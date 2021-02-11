@@ -1,7 +1,6 @@
 ﻿using Easy_Stego.Stego;
 using System;
 using System.Collections;
-using System.Threading.Tasks;
 
 namespace Stego.Decryption
 {
@@ -21,8 +20,6 @@ namespace Stego.Decryption
             int offset = (int)sizeInfo;
 
             //For every byte that contains a message:
-
-            //Parallel.For(0, messageBits.Count / 2, (i) => // 
             for (int i = 0; i < messageBits.Count / 2; i++)
             {
                 int indexImage = i * 8 + offset;

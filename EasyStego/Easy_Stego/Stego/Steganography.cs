@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -122,6 +121,7 @@ namespace Easy_Stego.Stego
                         break;
                 }
 
+                //Bitmap is too slow, this is the only way to have decent speed using it.
                 unsafe
                 {
                     BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
