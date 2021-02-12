@@ -14,6 +14,16 @@ This tool was created for **fun** and **demonstration** purposes only. Please **
 <br/>
 <br/>
 
+### Download an executable and test it for yourself
+
+I just published a version I was using for testing, it is a very basic and simple application but it's enough to show what EasyStego can do, without coding or cloning anything.
+
+You can get it here: [EasyStego_App](https://github.com/gabrielareia/EasyStego_AppExample/releases/tag/v1.0)<br/>
+Just download the "EasyStego_App.zip" file, extract it to a folder and open the "EasyStego_App.exe" file.
+
+The source code to the application you can find it here: [Source](https://github.com/gabrielareia/EasyStego_AppExample)
+<br/>
+
 ### What is EasyStego?
 
 EasyStego is a library that allows you to create simple steganography. You can hide text or even another image inside an image. Please note that I don't intend for this to be a professional library, I created this library mainly for fun and exploration, I saw a video on the subject and decided to give it a try, so I didn't use any fancy techniques, yet.
