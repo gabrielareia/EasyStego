@@ -18,7 +18,7 @@ This tool was created for **fun** and **demonstration** purposes only. Please **
 
 I just published a version I was using for testing, it is a very basic and simple application but it's enough to show what EasyStego can do, without coding or cloning anything.
 
-You can get it here: [EasyStego_App](https://github.com/gabrielareia/EasyStego_AppExample/releases/tag/v1.0)<br/>
+You can **download** it here: [EasyStego_App](https://github.com/gabrielareia/EasyStego_AppExample/releases/tag/v1.0)<br/>
 Just download the "EasyStego_App.zip" file, extract it to a folder and open the "EasyStego_App.exe" file.
 
 The source code to the application you can find it here: [Source](https://github.com/gabrielareia/EasyStego_AppExample)
